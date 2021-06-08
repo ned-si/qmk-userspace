@@ -5,6 +5,7 @@
 #include "combos.h"
 #include "unicode.h"
 #include "wrapper.h"
+#include "custom_strings.h"
 
 #ifdef TAP_DANCE_ENABLE
 #    include "tapdance.h"

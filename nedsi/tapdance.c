@@ -39,10 +39,13 @@ void UNI_W_L_finished (qk_tap_dance_state_t *state, void *user_data) {
   td_state = cur_dance(state);
   switch (td_state) {
     case SINGLE_TAP:
-      tap_code16(UC_M_WC);
+      set_unicode_input_mode(UC_WINC);
+      break;
+    case SINGLE_HOLD:
+      set_unicode_input_mode(UC_MAC);
       break;
     case DOUBLE_SINGLE_TAP:
-      tap_code16(UC_M_LN);
+      set_unicode_input_mode(UC_LNX);
     break;
     default: break;
   }
