@@ -107,25 +107,36 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 send_unicode_string("€");
             }
             break;
-    }
 
-            // for some reason, the code below doesn't work. says that UC_CLN is undeclared.
-        //
-        /* case UC_CLN: { */
-        /*    static uint16_t kc; */
-        /*    if (record->event.pressed) { */
-        /*         if ( get_mods() & MOD_MASK_SHIFT) { */
-        /*             kc = KC_SCLN; */
-        /*             del_mods(MOD_MASK_SHIFT); */
-        /*         } else { */
-        /*             kc = KC_CLN; */
-        /*         } */
-        /*         register_code16(kc); */
-        /*     } else { */
-        /*         unregister_code16(kc); */
-        /*     } */
-        /*     break; */
-        /* } */
+        case KC_SHRG:
+            if (record->event.pressed) {
+                send_unicode_string("¯\\_(ツ)_/¯");
+            }
+            break;
+
+        case KC_SIGN:
+            if (record->event.pressed) {
+                send_unicode_string("Cheers,\n\n\nJulien");
+            }
+            break;
+
+        case KC_VCLN: {
+           static uint16_t kc;
+           if (record->event.pressed) {
+                if ( get_mods() & MOD_MASK_SHIFT) {
+                    kc = KC_SCLN;
+                    del_mods(MOD_MASK_SHIFT);
+                } else {
+                    kc = KC_COLN;
+                }
+                register_code16(kc);
+            } else {
+                unregister_code16(kc);
+            }
+            break;
+        }
+
+    }
 
     return true;
 
