@@ -13,7 +13,8 @@
 #define ________________MAIN_R3________________     KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH
 
 // GAMING layout
-#define ________________GAMING_L2_________________     KC_A,    KC_S,    KC_D,    KC_F,    KC_G
+#define ________________GAMING_L2_________________     GAME_A,    KC_S,    KC_D,    KC_F,    KC_G
+#define ________________GAMING_L3_________________     GAME_Z,    KC_X,    KC_C,    KC_V,    KC_B
 
 // NUM layout
 #define ________________NUM_L1________________     KC_F9,  KC_F10,  KC_F11,  KC_F12, _______ 
@@ -36,7 +37,7 @@
 // NAV layout
 #define ________________NAV_L1________________      _______, _______, _______, _______, _______ 
 #define ________________NAV_L2________________      KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, _______ 
-#define ________________NAV_L3________________      _______, _______,TG(_GAMING),TG(_MAIN), _______ 
+#define ________________NAV_L3________________        RESET, _______,TG(_GAMING), _______, UNIWL 
 
 #define ________________NAV_R1________________      KC_HOME, KC_PGDN, KC_PGUP, KC_END , _______     
 #define ________________NAV_R2________________      KC_LEFT, KC_DOWN, KC_UP  , KC_RGHT, _______

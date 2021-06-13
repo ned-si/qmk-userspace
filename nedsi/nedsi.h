@@ -45,3 +45,7 @@ enum layers {
 #define HOME_K RCTL_T(KC_K)
 #define HOME_J RSFT_T(KC_J)
 #define HOME_H LT(_ACC, KC_H)
+
+// Game mods
+#define GAME_A LSFT_T(KC_A)
+#define GAME_Z LCTL_T(KC_A)
