@@ -15,8 +15,6 @@
 // GAMING layout
 #define ________________GAMING_L2_________________     KC_A,    KC_S,    KC_D,    KC_F,    KC_G
 
-#define ________________GAMING_R2_________________     KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN
-
 // NUM layout
 #define ________________NUM_L1________________     KC_F9,  KC_F10,  KC_F11,  KC_F12, _______ 
 #define ________________NUM_L2________________     KC_F5,   KC_F6,   KC_F7,   KC_F8, _______ 
@@ -38,30 +36,20 @@
 // NAV layout
 #define ________________NAV_L1________________      _______, _______, _______, _______, _______ 
 #define ________________NAV_L2________________      KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, _______ 
-#define ________________NAV_L3________________      _______, _______, _______, KC_SIGN, _______ 
+#define ________________NAV_L3________________      _______, _______,TG(_GAMING),TG(_MAIN), _______ 
 
 #define ________________NAV_R1________________      KC_HOME, KC_PGDN, KC_PGUP, KC_END , _______     
 #define ________________NAV_R2________________      KC_LEFT, KC_DOWN, KC_UP  , KC_RGHT, _______
 #define ________________NAV_R3________________      _______,NXTPRV,G(C(KC_LEFT)),G(C(KC_RGHT)), _______
 
 // ACC layout
-// unicode version
-/* #define ________________ACC_L1________________     _______, _______, E_ACUTE, E_GRAVE, _______ */
-/* #define ________________ACC_L2________________     A_GRAVE, A_CIRCU, E_CIRCU, _______, _______ */ 
-/* #define ________________ACC_L3________________     _______, _______, C_CDILA, _______, _______ */
-
-/* #define ________________ACC_R1________________     DED_UML, U_GRAVE, I_CIRCU, O_CIRCU, _______ */
-/* #define ________________ACC_R2________________     DED_CIR, _______, _______, _______, _______ */ 
-/* #define ________________ACC_R3________________     DEGR,    _______, _______, _______, _______ */ 
-
 #define ________________ACC_L1________________     KC_ACIR, _______, KC_EAIG, KC_EGRV, _______
-#define ________________ACC_L2________________     KC_AGRV, _______, KC_ECIR, KC_SHRG, _______ 
+#define ________________ACC_L2________________     KC_AGRV, _______, KC_ECIR, KC_SHRG, KC_SIGN 
 #define ________________ACC_L3________________     _______, _______, KC_CCED, _______, _______
 
 #define ________________ACC_R1________________     DED_UML, KC_UGRV, KC_ICIR, KC_OCIR, _______
 #define ________________ACC_R2________________     DED_CIR, KC_UCIR, KC_IUML, KC_OUML, _______ 
 #define ________________ACC_R3________________     _______, _______, _______, _______, _______ 
- 
     
 // MISC layout
 #define ________________MISC_L1________________     _______, _______, _______, _______, _______
