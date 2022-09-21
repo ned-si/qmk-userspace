@@ -38,7 +38,7 @@ combo_t key_combos[] = {
 
 void process_combo_event(uint16_t combo_index, bool pressed) {
     // Process mod-taps before the combo is fired,
-    // this helps making modifier-aware combos, 
+    // this helps making modifier-aware combos,
     // like UY_PRN or SPCN_NOT, more fluid
     // when I use them with home row mods.
     action_tapping_process((keyrecord_t){});
@@ -76,7 +76,7 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
 
         case FS:
             if (pressed) {
-                tap_code16(KC_CAPS);
+                tap_code16(CAPSWRD);
             }
         break;
 
