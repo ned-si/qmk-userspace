@@ -11,10 +11,6 @@
 #    include "tapdance.h"
 #endif
 
-#if defined(UNICODEMAP_ENABLE) || defined(UNICODE_ENABLE)
-#    include "unicode.h"
-#endif
-
 enum layers {
     _MAIN = 0,
     _GAMING,
