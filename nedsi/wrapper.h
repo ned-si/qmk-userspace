@@ -44,8 +44,8 @@
 #define ________________NAV_R3________________      _______, NXTPRV, _______, _______, _______
 
 // ACC layout
-#define ________________ACC_L1________________     KC_ACIR, _______, KC_EAIG, KC_EGRV, _______
-#define ________________ACC_L2________________     KC_AGRV, _______, KC_ECIR, KC_SHRG, KC_SIGN
+#define ________________ACC_L1________________     _______, _______, KC_EAIG, KC_EGRV, _______
+#define ________________ACC_L2________________     KC_AGRV, KC_ACIR, KC_ECIR, KC_SHRG, KC_SIGN
 #define ________________ACC_L3________________     _______, _______, KC_CCED, _______, _______
 
 #define ________________ACC_R1________________     DED_UML, KC_UGRV, KC_ICIR, KC_OCIR, _______
