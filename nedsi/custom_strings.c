@@ -1,12 +1,10 @@
 #include "nedsi.h"
-#include "features/achordion.h"
 
 uint16_t copy_paste_timer;
 
 __attribute__((weak)) bool process_record_keymap(uint16_t keycode, keyrecord_t *record) { return true; }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    if (!process_achordion(keycode, record)) { return false; }
     switch (keycode) {
         case KC_EAIG:
             if (record->event.pressed) {

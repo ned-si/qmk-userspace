@@ -3,7 +3,6 @@ SRC += tapdance.c
 SRC += combos.c
 SRC += unicode.c
 SRC += custom_strings.c
-SRC += features/achordion.c
 
 UNICODE_ENABLE = no
 UNICODEMAP_ENABLE = yes
