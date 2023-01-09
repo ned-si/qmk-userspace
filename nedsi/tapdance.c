@@ -73,9 +73,9 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case HOME_A:
-            return TAPPING_TERM + 50;
+            return TAPPING_TERM + 130;
         case HOME_S:
-            return TAPPING_TERM + 50;
+            return TAPPING_TERM + 100;
         /* case HOME_D: */
         /*     return TAPPING_TERM - 20; */
         case HOME_F:
@@ -89,9 +89,9 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
         /* case HOME_K: */
         /*     return TAPPING_TERM - 20; */
         case HOME_L:
-            return TAPPING_TERM + 50;
+            return TAPPING_TERM + 100;
         case HOME_SCLN:
-            return TAPPING_TERM + 50;
+            return TAPPING_TERM + 130;
         default:
             return TAPPING_TERM;
     }
