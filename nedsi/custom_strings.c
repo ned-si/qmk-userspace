@@ -120,6 +120,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             break;
 
+        case KC_PMED:
+            if (record->event.pressed) {
+                send_unicode_string("·");
+            }
+            break;
+
         case KC_VCLN: {
            static uint16_t kc;
            if (record->event.pressed) {

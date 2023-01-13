@@ -27,7 +27,7 @@
 
 // SYM layout
 #define ________________SYM_L1________________    _______, _______, KC_EURO, KC_AMPR, KC_DEGR
-#define ________________SYM_L2________________    _______, KC_TILD, KC_ASTR,  KC_GRV, KC_QUOT
+#define ________________SYM_L2________________    _______, KC_TILD, KC_ASTR,  KC_GRV, KC_PMED
 #define ________________SYM_L3________________    _______, _______, KC_PERC, KC_CIRC, KC_MINS
 
 #define ________________SYM_R1________________    KC_PIPE, KC_HASH, KC_LCBR, KC_RCBR, _______

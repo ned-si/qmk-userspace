@@ -24,6 +24,7 @@ enum userspace_custom_keycodes {
   KC_SHRG,
   KC_SIGN,
   KC_VCLN,
+  KC_PMED,
   NEW_SAFE_RANGE
 };
 
