@@ -19,8 +19,8 @@ enum {
 #define UNIWL TD(UNI_W_L)
 #define NXTPRV TD(NXT_PRV)
 
-int cur_dance (qk_tap_dance_state_t *state);
-void CA_CC_CV_finished (qk_tap_dance_state_t *state, void *user_data);
-void UNI_W_L_finished (qk_tap_dance_state_t *state, void *user_data);
-void NXT_PRV_finished (qk_tap_dance_state_t *state, void *user_data);
+int cur_dance (tap_dance_state_t *state);
+void CA_CC_CV_finished (tap_dance_state_t *state, void *user_data);
+void UNI_W_L_finished (tap_dance_state_t *state, void *user_data);
+void NXT_PRV_finished (tap_dance_state_t *state, void *user_data);
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record);

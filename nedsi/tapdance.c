@@ -4,7 +4,7 @@
 static td_state_t td_state;
 
 // track the tapdance state to return
-int cur_dance (qk_tap_dance_state_t *state) {
+int cur_dance (tap_dance_state_t *state) {
   if (state->count == 1) {
     if (state->interrupted || !state->pressed) {
         return SINGLE_TAP;
@@ -20,7 +20,7 @@ int cur_dance (qk_tap_dance_state_t *state) {
   }
 };
 
-void CA_CC_CV_finished (qk_tap_dance_state_t *state, void *user_data) {
+void CA_CC_CV_finished (tap_dance_state_t *state, void *user_data) {
   td_state = cur_dance(state);
   switch (td_state) {
     case SINGLE_TAP:
@@ -35,11 +35,11 @@ void CA_CC_CV_finished (qk_tap_dance_state_t *state, void *user_data) {
   }
 };
 
-void UNI_W_L_finished (qk_tap_dance_state_t *state, void *user_data) {
+void UNI_W_L_finished (tap_dance_state_t *state, void *user_data) {
   td_state = cur_dance(state);
   switch (td_state) {
     case SINGLE_TAP:
-      set_unicode_input_mode(UC_LNX);
+      set_unicode_input_mode(UC_LINX);
       break;
     case SINGLE_HOLD:
       set_unicode_input_mode(UC_WINC);
@@ -51,7 +51,7 @@ void UNI_W_L_finished (qk_tap_dance_state_t *state, void *user_data) {
   }
 };
 
-void NXT_PRV_finished (qk_tap_dance_state_t *state, void *user_data) {
+void NXT_PRV_finished (tap_dance_state_t *state, void *user_data) {
   td_state = cur_dance(state);
   switch (td_state) {
     case SINGLE_TAP:
@@ -64,7 +64,7 @@ void NXT_PRV_finished (qk_tap_dance_state_t *state, void *user_data) {
   }
 };
 
-qk_tap_dance_action_t tap_dance_actions[] = {
+tap_dance_action_t tap_dance_actions[] = {
     [CA_CC_CV] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, CA_CC_CV_finished, NULL),
     [UNI_W_L] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, UNI_W_L_finished, NULL),
     [NXT_PRV] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, NXT_PRV_finished, NULL),
