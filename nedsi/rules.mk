@@ -1,9 +1,10 @@
 SRC += nedsi.c
 SRC += tapdance.c
 SRC += combos.c
-SRC += unicode.c
+SRC += custom_unicode.c
 SRC += custom_strings.c
 
+UNICODE_COMMON = yes
 UNICODE_ENABLE = no
 UNICODEMAP_ENABLE = yes
 UCIS_ENABLE = no

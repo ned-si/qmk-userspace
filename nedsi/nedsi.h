@@ -3,7 +3,7 @@
 #include QMK_KEYBOARD_H
 
 #include "combos.h"
-#include "unicode.h"
+#include "custom_unicode.h"
 #include "wrapper.h"
 #include "custom_strings.h"
 
