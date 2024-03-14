@@ -6,6 +6,7 @@
 #include "custom_unicode.h"
 #include "wrapper.h"
 #include "custom_strings.h"
+#include "custom_shift_keys.h"
 
 #ifdef TAP_DANCE_ENABLE
 #    include "tapdance.h"

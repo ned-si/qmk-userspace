@@ -26,13 +26,13 @@
 #define ________________NUM_R3________________      KC_EQL,    KC_1,    KC_2,    KC_3,  KC_DOT
 
 // SYM layout
-#define ________________SYM_L1________________    _______, _______, KC_EURO, KC_AMPR, KC_DEGR
+#define ________________SYM_L1________________    _______, _______, KC_EURO, KC_DEGR, _______
 #define ________________SYM_L2________________    _______, KC_TILD, KC_ASTR,  KC_GRV, KC_PMED
 #define ________________SYM_L3________________    _______, _______, KC_PERC, KC_CIRC, KC_MINS
 
-#define ________________SYM_R1________________    KC_PIPE, KC_HASH, KC_LCBR, KC_RCBR, _______
-#define ________________SYM_R2________________      KC_AT, KC_EXLM, KC_LBRC, KC_RBRC,  KC_DLR
-#define ________________SYM_R3________________    KC_PPLS,  KC_EQL, KC_LPRN, KC_RPRN, KC_BSLS
+#define ________________SYM_R1________________    KC_AMPR, KC_HASH, KC_LBRC, KC_RBRC, _______
+#define ________________SYM_R2________________    KC_PIPE,  KC_DLR, KC_LCBR, KC_RCBR,  KC_AT
+#define ________________SYM_R3________________    KC_PPLS,  KC_EQL, KC_LPRN, KC_RPRN, _______
 
 // NAV layout
 #define ________________NAV_L1________________      _______, _______, _______, _______, _______
