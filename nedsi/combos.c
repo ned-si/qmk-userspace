@@ -17,12 +17,12 @@ enum combo_events {
 
 int COMBO_LEN = COMBO_LENGTH;
 
-const uint16_t PROGMEM J_K_COMBO[] = {HOME_J, HOME_K, COMBO_END};
-const uint16_t PROGMEM J_L_COMBO[] = {HOME_J, HOME_L, COMBO_END};
+const uint16_t PROGMEM J_K_COMBO[] = {KC_J, KC_K, COMBO_END};
+const uint16_t PROGMEM J_L_COMBO[] = {KC_J, KC_L, COMBO_END};
 const uint16_t PROGMEM M_COMMA_COMBO[] = {KC_M, KC_COMMA, COMBO_END};
 const uint16_t PROGMEM COMMA_DOT_COMBO[] = {KC_COMMA, KC_DOT, COMBO_END};
-const uint16_t PROGMEM F_D_COMBO[] = {HOME_F, HOME_D, COMBO_END};
-const uint16_t PROGMEM F_S_COMBO[] = {HOME_F, HOME_S, COMBO_END};
+const uint16_t PROGMEM F_D_COMBO[] = {KC_F, KC_D, COMBO_END};
+const uint16_t PROGMEM F_S_COMBO[] = {KC_F, KC_S, COMBO_END};
 const uint16_t PROGMEM C_V_COMBO[] = {KC_C, KC_V, COMBO_END};
 
 combo_t key_combos[] = {
