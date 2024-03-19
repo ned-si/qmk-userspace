@@ -1,8 +1,8 @@
 #include "custom_shift_keys.h"
 
 const custom_shift_key_t custom_shift_keys[] = {
-  {KC_DOT , KC_EXLM}, // Shift . is ?
-  {KC_COMM, KC_QUES}, // Shift , is !
+  {KC_DOT , KC_QUES}, // Shift . is ?
+  {KC_COMM, KC_EXLM}, // Shift , is !
   {KC_COLN, KC_SCLN}, // Shift : is ; 
   {KC_SLSH, KC_BSLS}, // Shift slash is backslash 
   {KC_LT, KC_GT}, // Shift < is > 
