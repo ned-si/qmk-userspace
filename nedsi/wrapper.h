@@ -44,8 +44,9 @@
 #define ________________NAV_R3________________      _______, _______, _______, _______, _______
 
 // ACC layout
-#define ________________ACC_L1________________     _______, _______, KC_EAIG, KC_EGRV, _______
-#define ________________ACC_L2________________     KC_AGRV, KC_ACIR, KC_ECIR, KC_SHRG, KC_SIGN
+// TODO: add emojis
+#define ________________ACC_L1________________     _______, KC_EGRV, KC_EAIG, _______, _______
+#define ________________ACC_L2________________     KC_AGRV, KC_ACIR, KC_ECIR, KC_SHRG, _______
 #define ________________ACC_L3________________     _______, _______, KC_CCED, _______, _______
 
 #define ________________ACC_R1________________     DED_UML, KC_UGRV, KC_ICIR, KC_OCIR, _______
