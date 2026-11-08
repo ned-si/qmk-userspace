@@ -1,0 +1,3 @@
+[submodule "keyboards/bastardkb/scylla/keymaps/nedsi"]
+	path = keyboards/bastardkb/scylla/keymaps/nedsi
+	url = ../scylla.git

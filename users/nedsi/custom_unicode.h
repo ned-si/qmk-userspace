@@ -11,7 +11,7 @@
 
 #define UCM_NAME(name, code)    UCM_ ## name,           // UCM_LALP,
 #define UCM_ENTRY(name, code)   [UCM_ ## name] = code,  // [UCM_LALP] = 0x03B1,
-#define UCM_KEYCODE(name, code) name = X(UCM_ ## name), // LALP = X(UCM_LALP)
+#define UCM_KEYCODE(name, code) name = UM(UCM_ ## name), // LALP = UM(UCM_LALP)
 
 #if defined(UNICODE_ENABLE)
 enum unicode_keycodes {
@@ -30,5 +30,5 @@ enum unicode_keycodes {
 #endif
 
 
-#define DED_CIR X(DED__CIR)
-#define DED_UML X(DED__UML)
+#define DED_CIR DED__CIR
+#define DED_UML DED__UML

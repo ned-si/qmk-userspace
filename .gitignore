@@ -1,0 +1,4 @@
+# Firmware produced by qmk compile / qmk userspace-compile
+*.bin
+*.hex
+*.uf2

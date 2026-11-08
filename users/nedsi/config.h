@@ -6,12 +6,11 @@
   #define RGBLIGHT_VAL_STEP 8
 #endif
 
-#define NO_ACTION_MACRO
 #define TAPPING_TERM 170
 #define TAPPING_TERM_PER_KEY
 
 // This prevents accidental repeats of the tap-hold keys when typing quickly.
-#define TAPPING_FORCE_HOLD
+#define QUICK_TAP_TERM 0
 
 // This prevents short hold periods to be interpreted as individual taps when typing quickly.
 #define PERMISSIVE_HOLD
