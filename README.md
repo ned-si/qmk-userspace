@@ -5,14 +5,39 @@ keymaps and shared user code live here, QMK Firmware itself stays a vanilla
 clone.
 
 ```
-qmk.json                                   build targets for `qmk userspace-compile`
-users/nedsi/                               shared code: layers, row macros, custom keycodes, tap dances
-keyboards/bastardkb/scylla/keymaps/nedsi/  Scylla keymap: a clone of ned-si/scylla (git-ignored)
+qmk.json      build targets for `qmk userspace-compile`
+keymaps.txt   which keymap repository is cloned into which keymap folder
+users/nedsi/  shared code: layers, row macros, custom keycodes, tap dances
+keyboards/    keymap clones, one repository per keyboard (git-ignored)
 ```
 
 Each keyboard keymap is its own repository, cloned into its QMK keymap folder.
 This repository ignores those folders (`keyboards/**/keymaps/nedsi/`), so it
 never pins a keymap commit: a build uses whatever each clone has checked out.
+
+## Keyboards
+
+| Keyboard | QMK target | Repository |
+|---|---|---|
+| Scylla (Splinky v3) | `bastardkb/scylla/promicro` | [scylla](https://github.com/ned-si/scylla) |
+| Skeletyl (handwired) | `bastardkb/skeletyl/promicro` | [skeletyl-qmk](https://github.com/ned-si/skeletyl-qmk) |
+| Microdox v1 | `boardsource/microdox/v1` | [microdox-qmk](https://github.com/ned-si/microdox-qmk) |
+| Tractyloder (Dactyl 4x5, trackball) | `handwired/dactyl_manuform/4x5` | [tractyloder](https://github.com/ned-si/tractyloder) |
+| Atreus 44 (handwired) | `handwired/pteron44` | [atreus44](https://github.com/ned-si/atreus44) |
+| BDN9 | `keebio/bdn9/rev1` | [bdn9](https://github.com/ned-si/bdn9) |
+| Keyboardio Atreus | `keyboardio/atreus` | [keyboardio-atreus](https://github.com/ned-si/keyboardio-atreus) |
+| Planck | `planck/rev6` | [planck](https://github.com/ned-si/planck) |
+| Kyria rev1 | `splitkb/kyria/rev1/base` | [kyria](https://github.com/ned-si/kyria) |
+| Zima | `splitkb/zima` | [zima](https://github.com/ned-si/zima) |
+
+Handwired boards build on the closest upstream keyboard, with their pins and
+matrix layout carried in the keymap; each keymap README says what differs.
+BDN9, Planck, Tractyloder and Zima keymaps are standalone and do not use
+`users/nedsi`.
+
+To add a keyboard: clone its repository into
+`keyboards/<keyboard>/keymaps/nedsi`, then add it to `keymaps.txt` and its
+target to `qmk.json`.
 
 ## Setup
 
@@ -29,13 +54,14 @@ never pins a keymap commit: a build uses whatever each clone has checked out.
    qmk config user.qmk_home="$HOME/repos/qmk_firmware"
    ```
 
-3. Clone this repository, register it as the overlay, then clone each keymap
-   into its folder:
+3. Clone this repository, register it as the overlay, then clone every keymap
+   listed in `keymaps.txt`:
 
    ```sh
    git clone git@github.com:ned-si/qmk-userspace.git ~/repos/qmk-userspace
    qmk config user.overlay_dir="$HOME/repos/qmk-userspace"
-   git clone git@github.com:ned-si/scylla.git ~/repos/qmk-userspace/keyboards/bastardkb/scylla/keymaps/nedsi
+   cd ~/repos/qmk-userspace
+   grep -v '^#' keymaps.txt | while read -r dir repo; do git clone "git@github.com:$repo.git" "$dir"; done
    ```
 
 4. `qmk doctor` should end with "QMK is ready to go".
@@ -43,27 +69,26 @@ never pins a keymap commit: a build uses whatever each clone has checked out.
 ## Build
 
 ```sh
-qmk userspace-compile        # every target in qmk.json; firmware lands in this directory
-qmk compile -kb bastardkb/scylla/promicro -km nedsi
+qmk userspace-compile                               # every target in qmk.json; firmware lands here
+qmk compile -kb bastardkb/scylla/promicro -km nedsi # one keyboard
 ```
 
-## Flash (Scylla)
+## Flash
 
 ```sh
-qmk flash -kb bastardkb/scylla/promicro -km nedsi
+qmk flash -kb <target> -km nedsi
 ```
 
-Then put one half in bootloader mode; it mounts as `RPI-RP2` and the CLI copies
-the `.uf2` onto it. Repeat for the other half: both take the same firmware.
-Ways into the bootloader: double-tap the reset button, `QK_BOOT` (top-left key
-on the NAV layer), or hold the top-left key while plugging the half in.
+Then put the keyboard (or one half) in bootloader mode; the CLI waits for it
+and flashes. Split keyboards take the same firmware on both halves, flashed one
+at a time. Each keymap README says how to enter its bootloader.
 
 ## Updating
 
 ```sh
 git -C ~/repos/qmk_firmware pull --recurse-submodules
-git -C ~/repos/qmk-userspace pull
-git -C ~/repos/qmk-userspace/keyboards/bastardkb/scylla/keymaps/nedsi pull
+cd ~/repos/qmk-userspace && git pull
+grep -v '^#' keymaps.txt | while read -r dir repo; do git -C "$dir" pull; done
 ```
 
 Keymap changes are committed and pushed from inside the keymap clone, to its own

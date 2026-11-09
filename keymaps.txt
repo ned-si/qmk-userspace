@@ -1,0 +1,11 @@
+# Keymap repositories cloned into this userspace: <folder> <GitHub repository>
+keyboards/bastardkb/scylla/keymaps/nedsi                 ned-si/scylla
+keyboards/bastardkb/skeletyl/keymaps/nedsi               ned-si/skeletyl-qmk
+keyboards/boardsource/microdox/keymaps/nedsi             ned-si/microdox-qmk
+keyboards/handwired/dactyl_manuform/4x5/keymaps/nedsi    ned-si/tractyloder
+keyboards/handwired/pteron44/keymaps/nedsi               ned-si/atreus44
+keyboards/keebio/bdn9/keymaps/nedsi                      ned-si/bdn9
+keyboards/keyboardio/atreus/keymaps/nedsi                ned-si/keyboardio-atreus
+keyboards/planck/keymaps/nedsi                           ned-si/planck
+keyboards/splitkb/kyria/keymaps/nedsi                    ned-si/kyria
+keyboards/splitkb/zima/keymaps/nedsi                     ned-si/zima

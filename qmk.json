@@ -1,6 +1,15 @@
 {
     "userspace_version": "1.1",
     "build_targets": [
-        ["bastardkb/scylla/promicro", "nedsi"]
+        ["bastardkb/scylla/promicro", "nedsi"],
+        ["bastardkb/skeletyl/promicro", "nedsi"],
+        ["boardsource/microdox/v1", "nedsi"],
+        ["handwired/dactyl_manuform/4x5", "nedsi"],
+        ["handwired/pteron44", "nedsi"],
+        ["keebio/bdn9/rev1", "nedsi"],
+        ["keyboardio/atreus", "nedsi"],
+        ["planck/rev6", "nedsi"],
+        ["splitkb/kyria/rev1/base", "nedsi"],
+        ["splitkb/zima", "nedsi"]
     ]
 }
