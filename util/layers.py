@@ -40,11 +40,12 @@ LAST = ["GAMING"]
 
 # Keyboards whose QMK layout data does not draw well as a grid.
 POSITIONS = {
-    # Kyria rev1: three 6-key rows, two inner keys extending the bottom row, 5-key thumb arc.
+    # Kyria rev1: three 6-key rows, the two inner bottom-row keys on a row of
+    # their own, then the 5-key thumb arc (tucked under each half when drawn).
     "splitkb/kyria/rev1/base": (
-        [[x, y] for y in (0, 1) for x in [*range(0, 6), *range(11, 17)]]
-        + [[x, 2] for x in [*range(0, 8), 9, 10, *range(11, 17)]]
-        + [[x, 3] for x in [*range(3, 8), *range(9, 14)]]
+        [[x, y] for y in (0, 1) for x in [*range(0, 6), *range(9, 15)]]
+        + [[x, 2] for x in range(0, 6)] + [[4, 3], [5, 3], [9, 3], [10, 3]] + [[x, 2] for x in range(9, 15)]
+        + [[x, 4] for x in [*range(1, 6), *range(9, 14)]]
     ),
 }
 
@@ -349,6 +350,30 @@ def rnd(v):
     return math.floor(v + 0.5)
 
 
+def tuck(cells, nrows):
+    """On split boards, move rows that reach past a half's columns (thumb rows)
+    back under that half, so the halves stay close together."""
+    row0 = sorted(c for r, c in cells if r == 0)
+    gaps = [(b - a, a, b) for a, b in zip(row0, row0[1:])]
+    if not gaps or max(gaps)[0] < 2:
+        return cells
+    _, inner_l, inner_r = max(gaps)
+    split, outer_l, outer_r = (inner_l + inner_r) / 2, row0[0], row0[-1]
+    out = {}
+    for r in range(nrows):
+        row = {c: i for (rr, c), i in cells.items() if rr == r}
+        left = [c for c in row if c < split]
+        right = [c for c in row if c > split]
+        dl = dr = 0
+        if left and outer_l not in left:  # not a main row: tuck it in
+            dl = min(max(0, max(left) - inner_l), min(left) - outer_l)
+        if right and outer_r not in right:
+            dr = min(max(0, inner_r - min(right)), outer_r - max(right))
+        for c, i in row.items():
+            out[(r, c - dl if c < split else c + dr)] = i
+    return out
+
+
 def grid(positions):
     pts = [list(p) for p in positions]
     gmin = min(p[1] for p in pts)
@@ -373,6 +398,7 @@ def grid(positions):
         while (r, c) in cells:
             c += 1
         cells[(r, c)] = i
+    cells = tuck(cells, len(rows))
     used = sorted({c for _, c in cells})
     colmap, kinds = {}, []
     for c in range(used[0], used[-1] + 1):
