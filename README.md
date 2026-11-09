@@ -83,14 +83,29 @@ Then put the keyboard (or one half) in bootloader mode; the CLI waits for it
 and flashes. Split keyboards take the same firmware on both halves, flashed one
 at a time. Each keymap README says how to enter its bootloader.
 
+## Layer diagrams
+
+Each keymap README has its layers drawn as text, between `<!-- layers:start -->`
+and `<!-- layers:end -->`. After changing a keymap, redraw them from this
+directory (needs `clang` and the QMK CLI):
+
+```sh
+python3 util/layers.py keyboards/bastardkb/scylla/keymaps/nedsi
+```
+
+It expands only this userspace's macros, takes key positions from QMK's layout
+data (or from a layout macro defined in the keymap), reads tap dance and combo
+behaviour from the keymap's own code, and draws the layers in the order Main,
+Num, Sym, Acc, Nav, Misc, then Gaming.
+
 ## CI
 
 `.github/workflows/build.yml` builds the firmware on GitHub Actions, following
 QMK's own userspace workflow plus a step that clones the repositories in
 `keymaps.txt`:
 
-- Here: every push, pull request and Monday morning (to catch upstream QMK
-  changes) builds every target. Pushes to `main` publish all the firmware as the
+- Here: every push and pull request builds every target, since the shared
+  code in `users/nedsi` affects them all. Pushes to `main` publish all the firmware as the
   [latest release](https://github.com/ned-si/qmk-userspace/releases/tag/latest).
 - In each keymap repository, `.github/workflows/build.yml` calls this workflow
   to build just that keyboard from the pushed commit, and publishes it as that
