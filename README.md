@@ -86,8 +86,10 @@ at a time. Each keymap README says how to enter its bootloader.
 ## Layer diagrams
 
 Each keymap README has its layers drawn as text, between `<!-- layers:start -->`
-and `<!-- layers:end -->`. After changing a keymap, redraw them from this
-directory (needs `clang` and the QMK CLI):
+and `<!-- layers:end -->`. CI redraws them on every push to a keymap repository
+and commits the README back (as `github-actions[bot]`) when they changed, so
+`git pull` after pushing a keymap change. To redraw locally instead, from this
+directory (needs a C compiler and the QMK CLI):
 
 ```sh
 python3 util/layers.py keyboards/bastardkb/scylla/keymaps/nedsi

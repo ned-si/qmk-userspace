@@ -96,13 +96,17 @@ def extract_layers(keymap_dir, userspace):
         defines = ["TAP_DANCE_ENABLE", "UNICODEMAP_ENABLE", "UNICODE_ENABLE", "COMBO_ENABLE",
                    "ENCODER_ENABLE", "OLED_ENABLE", "RGBLIGHT_ENABLE", "RGB_MATRIX_ENABLE",
                    "MOUSEKEY_ENABLE", "POINTING_DEVICE_ENABLE", "EXTRAKEY_ENABLE"]
-        cmd = ["clang", "-E", "-P", "-x", "c", "-Wno-everything", "-I", str(src), "-I", str(stubs),
+        cc = os.environ.get("LAYERS_CC") or next((c for c in ("clang", "gcc", "cc", "avr-gcc", "arm-none-eabi-gcc") if shutil.which(c)), None)
+        if not cc:
+            sys.exit("needs a C preprocessor: clang, gcc or a QMK toolchain compiler")
+        cmd = [cc, "-E", "-P", "-x", "c", "-w", "-I", str(src), "-I", str(stubs),
                '-DQMK_KEYBOARD_H="qmk_keyboard.h"'] + [f"-D{d}" for d in defines] + [str(src / "keymap.c")]
         for _ in range(100):
             r = run(cmd)
             if r.returncode == 0:
                 break
-            missing = re.findall(r"fatal error: '([^']+)' file not found", r.stderr)
+            missing = re.findall(r"fatal error: '([^']+)' file not found", r.stderr)  # clang
+            missing += re.findall(r"fatal error: ([^:\s]+): No such file or directory", r.stderr)  # gcc
             if not missing:
                 sys.exit(r.stderr)
             for n in missing:
@@ -534,7 +538,9 @@ def section(keymap_dir):
         out.append("")
         out.append("| Keys | Sends |")
         out.append("|---|---|")
-        out.extend(f"| {' + '.join(k).replace('|', '\\|')} | {d.replace('|', '\\|')} |" for k, d in cmb)
+        def cell(text):
+            return text.replace("|", "\\|")
+        out.extend(f"| {cell(' + '.join(k))} | {cell(d)} |" for k, d in cmb)
         out.append("")
         on_layers = {lab for layer in layers for lab in (label(k, set()) for k in layer["keys"])}
         on_layers |= {lab.split("/")[0] for lab in on_layers if "/" in lab and len(lab) > 1}

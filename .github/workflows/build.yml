@@ -6,7 +6,8 @@
 #   shared users/nedsi code affects them all). Pushes to main also publish the
 #   firmware as the "latest" release.
 # - Keymap repositories call this workflow (workflow_call) with their own
-#   repository and commit: only that keyboard is built, from that commit.
+#   repository and commit: only that keyboard is built, from that commit, and
+#   on pushes its README layer diagrams are redrawn and committed back.
 name: Build firmware
 
 on:
@@ -38,6 +39,8 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     container: ghcr.io/qmk/qmk_cli:latest
+    permissions:
+      contents: write  # the diagram step pushes README updates to the keymap repository
     env:
       KEYMAP_REPO: ${{ inputs.keymap_repo }}
       KEYMAP_REF: ${{ inputs.keymap_ref }}
@@ -109,6 +112,26 @@ jobs:
           ./qmk_firmware/util/ci/generate_failure_markdown.sh > $GITHUB_STEP_SUMMARY || true
           truncate --size='<960K' $GITHUB_STEP_SUMMARY || true
           [ ! -f .failed ] || exit 1
+
+      - name: Redraw layer diagrams
+        # Keymap pushes only: redraw the README diagrams (util/layers.py) and
+        # commit them back when they changed.
+        if: inputs.keymap_repo != '' && github.event_name == 'push'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          dir=$(awk -v r="$KEYMAP_REPO" '!/^#/ && $2 == r { print $1 }' keymaps.txt)
+          python3 util/layers.py "$dir"
+          if git -C "$dir" diff --quiet -- README.md; then
+            echo "Layer diagrams are up to date."
+            exit 0
+          fi
+          git -C "$dir" -c user.name="github-actions[bot]" \
+            -c user.email="41898583+github-actions[bot]@users.noreply.github.com" \
+            commit --quiet -m "docs: redraw layer diagrams" -- README.md
+          git -C "$dir" push --quiet "https://x-access-token:${GH_TOKEN}@github.com/${KEYMAP_REPO}.git" "HEAD:${GITHUB_REF_NAME}" \
+            || echo "::warning::Could not push the redrawn diagrams (branch moved on?); they will be redrawn on the next push."
 
       - name: Upload firmware
         uses: actions/upload-artifact@v7
