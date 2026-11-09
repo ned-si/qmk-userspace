@@ -83,6 +83,25 @@ Then put the keyboard (or one half) in bootloader mode; the CLI waits for it
 and flashes. Split keyboards take the same firmware on both halves, flashed one
 at a time. Each keymap README says how to enter its bootloader.
 
+## CI
+
+`.github/workflows/build.yml` builds the firmware on GitHub Actions, following
+QMK's own userspace workflow plus a step that clones the repositories in
+`keymaps.txt`:
+
+- Here: every push, pull request and Monday morning (to catch upstream QMK
+  changes) builds every target. Pushes to `main` publish all the firmware as the
+  [latest release](https://github.com/ned-si/qmk-userspace/releases/tag/latest).
+- In each keymap repository, `.github/workflows/build.yml` calls this workflow
+  to build just that keyboard from the pushed commit, and publishes it as that
+  repository's own latest release.
+- A branch pushed here builds the keymap branches of the same name, where they
+  exist, so a change spanning repositories can be tested before it reaches
+  `main`. A manual run can name the keymap branch instead.
+
+To flash from any machine: download the file from the latest release, then
+`qmk flash <file>` or the usual bootloader drag-and-drop.
+
 ## Updating
 
 ```sh

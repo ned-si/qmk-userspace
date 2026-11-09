@@ -1,0 +1,132 @@
+# Builds the firmware. Follows QMK's own userspace workflow
+# (qmk/.github qmk_userspace_build.yml), plus cloning the keymap repositories
+# listed in keymaps.txt, since they are not submodules.
+#
+# - Here: every push, pull request and a weekly run (catches upstream QMK
+#   changes) build every target in qmk.json. Pushes to main also publish the
+#   firmware as the "latest" release.
+# - Keymap repositories call this workflow (workflow_call) with their own
+#   repository and commit: only that keyboard is built, from that commit.
+name: Build firmware
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+    inputs:
+      keymap_branch:
+        description: "Branch to take from each keymap repository, when it has one (default branch otherwise)"
+        default: ""
+        required: false
+        type: string
+  workflow_call:
+    inputs:
+      keymap_repo:
+        description: "Keymap repository to build, e.g. ned-si/scylla"
+        required: true
+        type: string
+      keymap_ref:
+        description: "Commit of that repository to build"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    container: ghcr.io/qmk/qmk_cli:latest
+    env:
+      KEYMAP_REPO: ${{ inputs.keymap_repo }}
+      KEYMAP_REF: ${{ inputs.keymap_ref }}
+      # Branch to take from each keymap repository when it exists: the dispatch
+      # input, or for pushes here the same branch name (so a userspace branch
+      # builds the keymap branches of the same name).
+      KEYMAP_BRANCH: ${{ inputs.keymap_branch || (github.repository == 'ned-si/qmk-userspace' && github.ref_name) || '' }}
+
+    steps:
+      - name: Checkout userspace
+        uses: actions/checkout@v6
+        with:
+          repository: ned-si/qmk-userspace
+          ref: ${{ github.repository == 'ned-si/qmk-userspace' && github.sha || 'main' }}
+
+      - name: Checkout QMK Firmware
+        uses: actions/checkout@v6
+        with:
+          path: qmk_firmware
+          repository: qmk/qmk_firmware
+          ref: master
+          submodules: recursive
+
+      - name: Install QMK CLI dependencies
+        run: pip install -r qmk_firmware/requirements.txt
+
+      - name: Configure QMK CLI
+        run: |
+          git config --global --add safe.directory '*'
+          qmk config userspace_compile.parallel=$(nproc)
+          qmk config user.qmk_home=$GITHUB_WORKSPACE/qmk_firmware
+          qmk config user.overlay_dir=$GITHUB_WORKSPACE
+
+      - name: Clone keymap repositories
+        shell: bash
+        run: |
+          grep -v '^#' keymaps.txt | while read -r dir repo; do
+            url="https://github.com/$repo.git"
+            if [ "$repo" = "$KEYMAP_REPO" ]; then
+              git clone --quiet "$url" "$dir"
+              git -C "$dir" checkout --quiet "$KEYMAP_REF"
+            elif [ -n "$KEYMAP_BRANCH" ] && git ls-remote --exit-code --heads "$url" "$KEYMAP_BRANCH" > /dev/null; then
+              git clone --quiet --depth 1 --branch "$KEYMAP_BRANCH" "$url" "$dir"
+            else
+              git clone --quiet --depth 1 "$url" "$dir"
+            fi
+            echo "$repo: $(git -C "$dir" log -1 --format='%h %s')"
+          done
+
+      - name: Validate userspace
+        run: qmk userspace-doctor
+
+      - name: Build
+        shell: bash
+        run: |
+          if [ -z "$KEYMAP_REPO" ]; then
+            qmk userspace-compile --help | grep -q print-failures && extra=-p
+            qmk userspace-compile -e DUMP_CI_METADATA=yes $extra || touch .failed
+          else
+            # Build only the targets that live in the calling repository's folder.
+            dir=$(awk -v r="$KEYMAP_REPO" '!/^#/ && $2 == r { print $1 }' keymaps.txt)
+            kb=${dir#keyboards/}; kb=${kb%/keymaps/nedsi}
+            targets=$(python3 -c 'import json, sys; kb = sys.argv[1]; print("\n".join(t for t, _ in json.load(open("qmk.json"))["build_targets"] if t == kb or t.startswith(kb + "/")))' "$kb")
+            [ -n "$targets" ] || { echo "No target in qmk.json for $KEYMAP_REPO ($kb)"; exit 1; }
+            for t in $targets; do
+              qmk compile -kb "$t" -km nedsi -e DUMP_CI_METADATA=yes || touch .failed
+            done
+          fi
+          ./qmk_firmware/util/ci/generate_failure_markdown.sh > $GITHUB_STEP_SUMMARY || true
+          truncate --size='<960K' $GITHUB_STEP_SUMMARY || true
+          [ ! -f .failed ] || exit 1
+
+      - name: Upload firmware
+        uses: actions/upload-artifact@v7
+        if: always() && !cancelled()
+        with:
+          name: Firmware
+          if-no-files-found: error
+          path: |
+            *.bin
+            *.hex
+            *.uf2
+
+  publish:
+    name: Publish
+    needs: build
+    if: github.repository == 'ned-si/qmk-userspace' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+    uses: qmk/.github/.github/workflows/qmk_userspace_publish.yml@main
