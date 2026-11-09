@@ -2,3 +2,6 @@
 *.bin
 *.hex
 *.uf2
+
+# Per-keyboard keymap repos, cloned in place (see README)
+keyboards/**/keymaps/nedsi/

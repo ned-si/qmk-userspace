@@ -7,8 +7,12 @@ clone.
 ```
 qmk.json                                   build targets for `qmk userspace-compile`
 users/nedsi/                               shared code: layers, row macros, custom keycodes, tap dances
-keyboards/bastardkb/scylla/keymaps/nedsi/  Scylla keymap (submodule: ned-si/scylla)
+keyboards/bastardkb/scylla/keymaps/nedsi/  Scylla keymap: a clone of ned-si/scylla (git-ignored)
 ```
+
+Each keyboard keymap is its own repository, cloned into its QMK keymap folder.
+This repository ignores those folders (`keyboards/**/keymaps/nedsi/`), so it
+never pins a keymap commit: a build uses whatever each clone has checked out.
 
 ## Setup
 
@@ -25,11 +29,13 @@ keyboards/bastardkb/scylla/keymaps/nedsi/  Scylla keymap (submodule: ned-si/scyl
    qmk config user.qmk_home="$HOME/repos/qmk_firmware"
    ```
 
-3. Clone this repository with its submodules and register it as the overlay:
+3. Clone this repository, register it as the overlay, then clone each keymap
+   into its folder:
 
    ```sh
-   git clone --recurse-submodules git@github.com:ned-si/qmk-userspace.git ~/repos/qmk-userspace
+   git clone git@github.com:ned-si/qmk-userspace.git ~/repos/qmk-userspace
    qmk config user.overlay_dir="$HOME/repos/qmk-userspace"
+   git clone git@github.com:ned-si/scylla.git ~/repos/qmk-userspace/keyboards/bastardkb/scylla/keymaps/nedsi
    ```
 
 4. `qmk doctor` should end with "QMK is ready to go".
@@ -56,5 +62,9 @@ on the NAV layer), or hold the top-left key while plugging the half in.
 
 ```sh
 git -C ~/repos/qmk_firmware pull --recurse-submodules
-git -C ~/repos/qmk-userspace pull --recurse-submodules
+git -C ~/repos/qmk-userspace pull
+git -C ~/repos/qmk-userspace/keyboards/bastardkb/scylla/keymaps/nedsi pull
 ```
+
+Keymap changes are committed and pushed from inside the keymap clone, to its own
+repository. Shared code in `users/nedsi` is committed here.
