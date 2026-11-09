@@ -2,8 +2,8 @@
 # (qmk/.github qmk_userspace_build.yml), plus cloning the keymap repositories
 # listed in keymaps.txt, since they are not submodules.
 #
-# - Here: every push, pull request and a weekly run (catches upstream QMK
-#   changes) build every target in qmk.json. Pushes to main also publish the
+# - Here: every push and pull request builds every target in qmk.json (the
+#   shared users/nedsi code affects them all). Pushes to main also publish the
 #   firmware as the "latest" release.
 # - Keymap repositories call this workflow (workflow_call) with their own
 #   repository and commit: only that keyboard is built, from that commit.
@@ -12,8 +12,6 @@ name: Build firmware
 on:
   push:
   pull_request:
-  schedule:
-    - cron: "0 6 * * 1"
   workflow_dispatch:
     inputs:
       keymap_branch:
