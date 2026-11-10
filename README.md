@@ -226,7 +226,8 @@ QMK's own userspace workflow plus a step that clones the repositories in
   to build just that keyboard from the pushed commit, and publishes it as a
   release of that repository.
 - Releases are tagged with the short commit SHA they were built from, so tags
-  never move. The newest one is always at `/releases/latest`, for example
+  never move, and only the last 5 are kept (older releases and their tags are
+  deleted). The newest one is always at `/releases/latest`, for example
   [qmk-userspace's](https://github.com/ned-si/qmk-userspace/releases/latest)
   with every keyboard.
 - A branch pushed here builds the keymap branches of the same name, where they

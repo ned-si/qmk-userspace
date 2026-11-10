@@ -10,7 +10,8 @@
 #   on pushes its README layer diagrams are redrawn and a release published.
 #
 # Releases are tagged with the short commit SHA, so no tag ever moves; the
-# newest one is always at https://github.com/<repo>/releases/latest.
+# newest one is always at https://github.com/<repo>/releases/latest. Only the
+# last 5 releases (and their tags) are kept.
 name: Build firmware
 
 on:
@@ -189,3 +190,14 @@ jobs:
           gh release create "$tag" firmware/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
               --title "Firmware $tag" --notes "$notes" --latest \
             || gh release upload "$tag" firmware/* --repo "$GITHUB_REPOSITORY" --clobber
+
+      - name: Keep the last 5 releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release list --repo "$GITHUB_REPOSITORY" --limit 1000 --json tagName,createdAt \
+              --jq 'sort_by(.createdAt) | reverse | .[5:][] | .tagName' |
+            while read -r old; do
+              echo "Deleting release $old"
+              gh release delete "$old" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes
+            done
