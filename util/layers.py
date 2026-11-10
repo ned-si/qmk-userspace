@@ -3,6 +3,7 @@
 
     python3 util/layers.py keyboards/<keyboard>/keymaps/nedsi           # update README.md
     python3 util/layers.py keyboards/<keyboard>/keymaps/nedsi --print   # only print
+    python3 util/layers.py users/nedsi       # shared layers, in this repository's README.md
 
 Run from the root of this userspace, with the QMK CLI set up. The diagrams go
 between the `<!-- layers:start -->` and `<!-- layers:end -->` markers in the
@@ -462,6 +463,45 @@ def activators(layers, target):
     return out
 
 
+def notes_for(used_all, td, userspace):
+    """Explanations for the special keys a set of layers uses."""
+    notes = []
+    if "dual" in used_all:
+        notes.append("`X/Mod` and `X/Lay` keys type X when tapped, and act as the modifier or layer while held.")
+    for t, text in sorted(td.items()):
+        if t in used_all:
+            notes.append(f"`{KEYS.get(t, t)}`: {text}.")
+    if userspace:
+        if "KC_COLN" in used_all:
+            notes.append("`:` sends `;` when shifted.")
+        if "KC_BSPC" in used_all:
+            notes.append("`Bksp` sends Delete when shifted.")
+        if "KC_AMPR" in used_all:
+            notes.append("`&` sends `|` when shifted.")
+    if "CW_TOGG" in used_all:
+        notes.append("`CapsWrd` is Caps Word: capitalises until the next non-word key.")
+    if "KC_SHRG" in used_all:
+        notes.append("`Shrug` types `¯\\_(ツ)_/¯`.")
+    if used_all & {"DED__CIR", "DED__UML", "UM(DED__CIR)", "UM(DED__UML)"}:
+        notes.append("The dead keys add a circumflex or diaeresis to the next letter.")
+    if used_all & {"QK_BOOT", "RESET"}:
+        notes.append("`Boot` reboots into the bootloader, for flashing.")
+    for item in sorted(x for x in used_all if isinstance(x, tuple) and x[0] == "toggle"):
+        notes.append(f"`{layer_title(item[1])}` toggles the {layer_title(item[1])} layer on and off.")
+    if "TD(UNI_W_L)" in used_all and "TD(UNI_W_L)" not in td:
+        notes.append("`Unicode` switches the Unicode input mode.")
+    if used_all & {"LCTL(KC_Z)", "LCTL(KC_Y)"}:
+        notes.append("`Undo` and `Redo` are Ctrl+Z and Ctrl+Y.")
+    if "meh" in used_all:
+        notes.append("`Meh` is Ctrl+Shift+Alt.")
+    if used_all & {"KC_ULCLK", "KC_IRCLK", "KC_JLCLK", "KC_KRCLK"}:
+        notes.append("`U/Clk`, `I/RClk` type the letter, or click (right-click) right after the trackball moved. `Scroll` switches the trackball between cursor and scrolling.")
+    unknown = sorted(x[1] for x in used_all if isinstance(x, tuple) and x[0] == "unknown")
+    if unknown:
+        print("labels guessed for: " + ", ".join(unknown), file=sys.stderr)
+    return notes
+
+
 def section(keymap_dir):
     target = target_for(keymap_dir)
     userspace = uses_userspace(keymap_dir)
@@ -518,40 +558,7 @@ def section(keymap_dir):
         out.append("```")
         out.append("")
 
-    notes = []
-    if "dual" in used_all:
-        notes.append("`X/Mod` and `X/Lay` keys type X when tapped, and act as the modifier or layer while held.")
-    for t, text in sorted(td.items()):
-        if t in used_all:
-            notes.append(f"`{KEYS.get(t, t)}`: {text}.")
-    if userspace:
-        if "KC_COLN" in used_all:
-            notes.append("`:` sends `;` when shifted.")
-        if "KC_BSPC" in used_all:
-            notes.append("`Bksp` sends Delete when shifted.")
-        if "KC_AMPR" in used_all:
-            notes.append("`&` sends `|` when shifted.")
-    if "CW_TOGG" in used_all:
-        notes.append("`CapsWrd` is Caps Word: capitalises until the next non-word key.")
-    if "KC_SHRG" in used_all:
-        notes.append("`Shrug` types `¯\\_(ツ)_/¯`.")
-    if used_all & {"DED__CIR", "DED__UML", "UM(DED__CIR)", "UM(DED__UML)"}:
-        notes.append("The dead keys add a circumflex or diaeresis to the next letter.")
-    if used_all & {"QK_BOOT", "RESET"}:
-        notes.append("`Boot` reboots into the bootloader, for flashing.")
-    for item in sorted(x for x in used_all if isinstance(x, tuple) and x[0] == "toggle"):
-        notes.append(f"`{layer_title(item[1])}` toggles the {layer_title(item[1])} layer on and off.")
-    if "TD(UNI_W_L)" in used_all and "TD(UNI_W_L)" not in td:
-        notes.append("`Unicode` switches the Unicode input mode.")
-    if used_all & {"LCTL(KC_Z)", "LCTL(KC_Y)"}:
-        notes.append("`Undo` and `Redo` are Ctrl+Z and Ctrl+Y.")
-    if "meh" in used_all:
-        notes.append("`Meh` is Ctrl+Shift+Alt.")
-    if used_all & {"KC_ULCLK", "KC_IRCLK", "KC_JLCLK", "KC_KRCLK"}:
-        notes.append("`U/Clk`, `I/RClk` type the letter, or click (right-click) right after the trackball moved. `Scroll` switches the trackball between cursor and scrolling.")
-    unknown = sorted(x[1] for x in used_all if isinstance(x, tuple) and x[0] == "unknown")
-    if unknown:
-        print("labels guessed for: " + ", ".join(unknown), file=sys.stderr)
+    notes = notes_for(used_all, td, userspace)
     if notes:
         out.extend(f"- {n}" for n in notes)
         out.append("")
@@ -577,6 +584,44 @@ def section(keymap_dir):
     return "\n".join(out).rstrip() + "\n"
 
 
+def userspace_section():
+    """The shared layers: users/nedsi/wrapper.h row macros, as 3x5 + 3x5 grids."""
+    text = (ROOT / "users/nedsi/wrapper.h").read_text()
+    rows = {}
+    for m in re.finditer(r"#\s*define\s+(_+([A-Z]+)_([LR])([123])_+)\s", text):
+        rows.setdefault(m.group(2), {})[m.group(3) + m.group(4)] = m.group(1)
+    names = [n for n, r in rows.items() if len(r) == 6]
+    work = pathlib.Path(tempfile.mkdtemp())
+    try:
+        entries = ",\n".join(
+            f"[_{n}] = ROWS({', '.join(rows[n][k] for k in ('L1', 'R1', 'L2', 'R2', 'L3', 'R3'))})" for n in names)
+        (work / "keymap.c").write_text(
+            '#include "nedsi.h"\nconst uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {\n' + entries + "\n};\n")
+        layers, _ = extract_layers(work, True)
+    finally:
+        shutil.rmtree(work)
+    positions = [[x, y] for y in range(3) for x in [*range(0, 5), *range(6, 11)]]
+    layout = grid(positions)
+    td = tap_dance_notes([f for f in (ROOT / "users/nedsi").iterdir() if f.suffix == ".c"])
+    out, used_all = [], set()
+    for layer in ordered(layers):
+        used = set()
+        labels = [label(k, used) for k in layer["keys"]]
+        used_all |= used
+        out += [f"#### {layer_title(layer['name'])}", "", "```", draw(labels, layout), "```", ""]
+    notes = notes_for(used_all, td, True)
+    if notes:
+        out.extend(f"- {n}" for n in notes)
+        out.append("")
+    return "\n".join(out).rstrip() + "\n"
+
+
+USERSPACE_INTRO = """Generated by `util/layers.py users/nedsi` from the row macros in
+`users/nedsi/wrapper.h`: the three main rows of each half. Each keymap adds its
+own outer columns, thumbs and layer keys around them. Empty keys fall through.
+"""
+
+
 INTRO = """Generated by `util/layers.py` in qmk-userspace from this keymap; rerun it after a
 keymap change. Empty keys fall through to the layer below. `[NAME]` marks the
 key held to reach that layer; upper-case `SYM`, `NUM`, ... are hold-for-layer keys.
@@ -589,7 +634,11 @@ def main():
     ap.add_argument("--print", action="store_true", help="print instead of updating README.md")
     a = ap.parse_args()
     keymap_dir = (ROOT / a.keymap_dir).resolve()
-    block = f"{MARK_START}\n{INTRO}\n{section(keymap_dir)}{MARK_END}"
+    if keymap_dir == (ROOT / "users/nedsi").resolve():
+        block = f"{MARK_START}\n{USERSPACE_INTRO}\n{userspace_section()}{MARK_END}"
+        keymap_dir = ROOT
+    else:
+        block = f"{MARK_START}\n{INTRO}\n{section(keymap_dir)}{MARK_END}"
     if a.print:
         print(block)
         return
