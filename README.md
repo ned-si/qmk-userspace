@@ -88,7 +88,7 @@ at a time. Each keymap README says how to enter its bootloader.
 Each keymap README has its layers drawn as text, between `<!-- layers:start -->`
 and `<!-- layers:end -->`. CI redraws them on every push to a keymap repository
 and commits the README back (as `github-actions[bot]`) when they changed, so
-`git pull` after pushing a keymap change. To redraw locally instead, from this
+`git pull --force` after pushing a keymap change. To redraw locally instead, from this
 directory (needs a C compiler and the QMK CLI):
 
 ```sh
@@ -123,9 +123,12 @@ To flash from any machine: download the file from the latest release, then
 
 ```sh
 git -C ~/repos/qmk_firmware pull --recurse-submodules
-cd ~/repos/qmk-userspace && git pull
-grep -v '^#' keymaps.txt | while read -r dir repo; do git -C "$dir" pull; done
+cd ~/repos/qmk-userspace && git pull --force
+grep -v '^#' keymaps.txt | while read -r dir repo; do git -C "$dir" pull --force; done
 ```
+
+`--force` lets the `latest` tag move: CI recreates it with each release, and a
+plain `git pull` refuses to overwrite a tag it already has.
 
 Keymap changes are committed and pushed from inside the keymap clone, to its own
 repository. Shared code in `users/nedsi` is committed here.
